@@ -1,6 +1,8 @@
 """
 Testes de integração para o CRUD de transações.
 Roda com: pytest tests/
+
+Os models são registrados no Base via conftest.py na raiz do projeto.
 """
 import pytest
 from fastapi.testclient import TestClient
