@@ -1,15 +1,21 @@
 # Samantha_Zentrix
 
-Sistema Financeiro Inteligente Pessoal (nível fintech) para controle e análise de gastos pessoais.
+![Python](https://img.shields.io/badge/python-3.11-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.100.0-green)
+![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
-## Funcionalidades
-- Registro de transações (entrada/saída)
+Sistema Financeiro Inteligente Pessoal (nível fintech) para controle e análise de gastos. Permite registrar transações, gerar relatórios e se conectar com futuros módulos inteligentes.
+
+---
+
+## Funcionalidades Principais
+
+- Registro de transações (entrada e saída)
 - Categorias personalizadas
-- Relatórios resumidos
-- API REST com FastAPI pronta para integração
+- Relatórios resumidos e gráficos
+- API REST pronta para integração
+- Estrutura modular pronta para crescimento
 
-## Instalação
-1. Clone o repositório:
-   ```bash
-   git clone https://github.com/SEU_USUARIO/samantha_zentrix.git
-   cd samantha_zentrix
+---
+
+## Estrutura do Projeto
