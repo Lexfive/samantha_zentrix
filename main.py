@@ -1,23 +1,32 @@
-from contextlib import asynccontextmanager
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy.orm import Session
+from database import SessionLocal, engine
+from models.transaction import Transaction, Base
+from schemas.transaction import TransactionCreate, TransactionResponse
 
-from fastapi import FastAPI
+app = FastAPI()
 
-from database.connection import init_db
-import models.transaction  # noqa: F401 — garante que o model é registrado no Base antes do init_db
-from routes import health, transactions
+# Inicializa o banco
+Base.metadata.create_all(bind=engine)
 
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    init_db()  # cria as tabelas ao iniciar
-    yield
+# Criar transação
+@app.post("/transactions/", response_model=TransactionResponse)
+def create_transaction(transaction: TransactionCreate, db: Session = Depends(get_db)):
+    db_trx = Transaction(**transaction.dict())
+    db.add(db_trx)
+    db.commit()
+    db.refresh(db_trx)
+    return db_trx
 
-
-app = FastAPI(
-    title="API Base",
-    version="0.1.0",
-    lifespan=lifespan,
-)
-
-app.include_router(health.router)
-app.include_router(transactions.router)
+# Listar todas
+@app.get("/transactions/", response_model=list[TransactionResponse])
+def list_transactions(db: Session = Depends(get_db)):
+    return db.query(Transaction).all()
