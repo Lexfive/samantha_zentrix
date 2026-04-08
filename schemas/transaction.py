@@ -1,22 +1,14 @@
-from datetime import datetime
-from typing import Literal, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
-class TransactionCreate(BaseModel):
-    type: Literal["income", "expense"]
-    amount: float = Field(gt=0)
-    description: str = Field(min_length=1)
-
-class TransactionUpdate(BaseModel):
-    type: Optional[Literal["income", "expense"]] = None
-    amount: Optional[float] = Field(default=None, gt=0)
-    description: Optional[str] = Field(default=None, min_length=1)
-
-class TransactionResponse(BaseModel):
-    id: int
-    type: str
-    amount: float
+class TransactionBase(BaseModel):
     description: str
-    created_at: datetime
+    amount: float
 
-    model_config = {"from_attributes": True}
+class TransactionCreate(TransactionBase):
+    pass
+
+class TransactionRead(TransactionBase):
+    id: int
+
+    class Config:
+        from_attributes = True  # Pydantic V2
