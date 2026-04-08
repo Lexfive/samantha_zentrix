@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from database.connection import init_db
+import models.transaction  # noqa: F401 — garante que o model é registrado no Base antes do init_db
 from routes import health
 
 
