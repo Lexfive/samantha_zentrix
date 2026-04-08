@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 from database.connection import init_db
 import models.transaction  # noqa: F401 — garante que o model é registrado no Base antes do init_db
-from routes import health
+from routes import health, transactions
 
 
 @asynccontextmanager
@@ -20,3 +20,4 @@ app = FastAPI(
 )
 
 app.include_router(health.router)
+app.include_router(transactions.router)
