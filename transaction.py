@@ -10,6 +10,12 @@ class TransactionCreate(BaseModel):
     description: str = Field(min_length=1)
 
 
+class SummaryResponse(BaseModel):
+    total_income: float
+    total_expense: float
+    balance: float
+
+
 class TransactionResponse(BaseModel):
     id: int
     type: str
