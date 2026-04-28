@@ -1,5 +1,9 @@
+from dotenv import load_dotenv
 import os
 from decimal import Decimal
+
+# 🔥 CARREGA O .env
+load_dotenv()
 
 # ── JWT ────────────────────────────────────────────────────────────────────────
 SECRET_KEY: str = os.getenv("SECRET_KEY", "")

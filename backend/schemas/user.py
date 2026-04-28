@@ -16,7 +16,7 @@ class UserResponse(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    username: str
+    email: EmailStr
     password: str
 
 
