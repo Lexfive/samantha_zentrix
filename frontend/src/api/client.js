@@ -1,9 +1,10 @@
-import axios from 'axios'
+import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
-  headers: { 'Content-Type': 'application/json' },
-})
+  baseURL: "https://samantha-zentrix.onrender.com",
+});
+
+export default api;
 
 // Attach JWT to every request
 api.interceptors.request.use((config) => {
