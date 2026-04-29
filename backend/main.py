@@ -27,7 +27,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
+    allow_origins=["*"]
         "https://samantha-zentrix.vercel.app",
         "http://localhost:5173",
     ],
@@ -41,6 +41,6 @@ app.include_router(categories.router)
 app.include_router(transactions.router)
 
 
-@app.get("/health", tags=["Health"])
+@app.get("/", tags=["Health"])
 def health() -> dict:
     return {"status": "ok", "version": app.version}
