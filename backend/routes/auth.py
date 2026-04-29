@@ -12,11 +12,25 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def register(payload: UserCreate, db: Session = Depends(get_db)) -> User:
+
     if db.query(User).filter(User.username == payload.username).first():
         raise HTTPException(status.HTTP_409_CONFLICT, "Username já em uso")
+
     if db.query(User).filter(User.email == payload.email).first():
         raise HTTPException(status.HTTP_409_CONFLICT, "Email já em uso")
 
+    # 👇 ADICIONA ISSO AQUI
+    if len(payload.password) > 72:
+        raise HTTPException(
+            status_code=400,
+            detail="Senha muito longa (máx 72 caracteres)"
+        )
+
+    user = User(
+        username=payload.username,
+        email=payload.email,
+        password_hash=hash_password(payload.password),
+    )
     user = User(
         username=payload.username,
         email=payload.email,
