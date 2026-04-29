@@ -26,15 +26,11 @@ def register(payload: UserCreate, db: Session = Depends(get_db)) -> User:
             detail="Senha muito longa (máx 72 caracteres)"
         )
 
-    user = User(
-        username=payload.username,
-        email=payload.email,
-        password_hash=hash_password(payload.password),
-    )
-    user = User(
-        username=payload.username,
-        email=payload.email,
-        password_hash=hash_password(payload.password),
+user = User(
+    username=payload.username,
+    email=payload.email,
+    password_hash=hash_password(payload.password),
+)
     )
     db.add(user)
     db.commit()
@@ -47,6 +43,9 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse
     user = db.query(User).filter(User.email == payload.email).first()
 
     if not user or not verify_password(payload.password, user.password_hash):
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Credenciais inválidas")
+        raise HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    detail="Credenciais inválidas"
+)
 
     return TokenResponse(access_token=create_access_token(user.id))
