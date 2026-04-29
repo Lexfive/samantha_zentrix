@@ -53,7 +53,7 @@ def _base_query(user: User, db: Session):
 # CREATE
 # ─────────────────────────────────────────────────────────────
 
-@router.post(
+@router.post("")
     "",
     response_model=TransactionResponse,
     status_code=status.HTTP_201_CREATED
