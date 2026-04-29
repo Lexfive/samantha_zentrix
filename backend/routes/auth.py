@@ -10,42 +10,58 @@ from schemas.user import LoginRequest, TokenResponse, UserCreate, UserResponse
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
 
-@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/register",
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED
+)
 def register(payload: UserCreate, db: Session = Depends(get_db)) -> User:
 
     if db.query(User).filter(User.username == payload.username).first():
-        raise HTTPException(status.HTTP_409_CONFLICT, "Username já em uso")
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Username já em uso"
+        )
 
     if db.query(User).filter(User.email == payload.email).first():
-        raise HTTPException(status.HTTP_409_CONFLICT, "Email já em uso")
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Email já em uso"
+        )
 
-    # 👇 ADICIONA ISSO AQUI
     if len(payload.password) > 72:
         raise HTTPException(
             status_code=400,
             detail="Senha muito longa (máx 72 caracteres)"
         )
 
-user = User(
-    username=payload.username,
-    email=payload.email,
-    password_hash=hash_password(payload.password),
-)
+    user = User(
+        username=payload.username,
+        email=payload.email,
+        password_hash=hash_password(payload.password),
     )
+
     db.add(user)
     db.commit()
     db.refresh(user)
+
     return user
 
 
 @router.post("/login", response_model=TokenResponse)
-def login(payload: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse:
+def login(
+    payload: LoginRequest,
+    db: Session = Depends(get_db)
+) -> TokenResponse:
+
     user = db.query(User).filter(User.email == payload.email).first()
 
     if not user or not verify_password(payload.password, user.password_hash):
         raise HTTPException(
-    status_code=status.HTTP_401_UNAUTHORIZED,
-    detail="Credenciais inválidas"
-)
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Credenciais inválidas"
+        )
 
-    return TokenResponse(access_token=create_access_token(user.id))
+    token = create_access_token(user.id)
+
+    return TokenResponse(access_token=token)
