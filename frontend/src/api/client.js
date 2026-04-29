@@ -4,28 +4,26 @@ const api = axios.create({
   baseURL: "https://samantha-zentrix.onrender.com",
 });
 
-export default api;
-
 // Attach JWT to every request
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('zentrix_token')
+  const token = localStorage.getItem('zentrix_token');
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+    config.headers.Authorization = `Bearer ${token}`;
   }
-  return config
-})
+  return config;
+});
 
 // Handle 401 globally — clear session and redirect
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('zentrix_token')
-      localStorage.removeItem('zentrix_user')
-      window.location.href = '/login'
+      localStorage.removeItem('zentrix_token');
+      localStorage.removeItem('zentrix_user');
+      window.location.href = '/login';
     }
-    return Promise.reject(error)
+    return Promise.reject(error);
   }
-)
+);
 
-export default api
+export default api;
