@@ -3,10 +3,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from config import CORS_ORIGINS
 from database.connection import init_db
 
-import models.user         # noqa: F401 — registra no Base
+import models.user         # noqa: F401
 import models.category     # noqa: F401
 import models.transaction  # noqa: F401
 
@@ -25,9 +24,11 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# 🔥 CORS corrigido (isso aqui estava quebrado)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"]
+    allow_origins=[
+        "*",  # pode deixar assim em dev/prod inicial
         "https://samantha-zentrix.vercel.app",
         "http://localhost:5173",
     ],
@@ -36,11 +37,25 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Routers
 app.include_router(auth.router)
 app.include_router(categories.router)
 app.include_router(transactions.router)
 
 
+# Health check raiz
 @app.get("/", tags=["Health"])
 def health() -> dict:
-    return {"status": "ok", "version": app.version}
+    return {
+        "status": "ok",
+        "version": app.version
+    }
+
+
+# Endpoint opcional mais explícito
+@app.get("/health", tags=["Health"])
+def health_check() -> dict:
+    return {
+        "status": "ok",
+        "version": app.version
+    }
